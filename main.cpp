@@ -15,7 +15,7 @@ int main()
 
         int page_num = 0;
         size_t cache_size = 0;
-        fscanf(tmp_file, "%d %ld", &page_num, &cache_size);
+        fscanf(tmp_file, "%ld %d", &cache_size, &page_num);
 
         std::vector<int> vec(page_num);
         

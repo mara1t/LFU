@@ -9,5 +9,5 @@ int IdealCache(int page_num, size_t cache_size, const std::vector<int>& vec)
         ideal_cache.access(tmp_vec_elem);
     }
 
-    return ideal_cache.p_hits;
+    return ideal_cache.p_hits_;
 }

@@ -12,7 +12,7 @@ int test_generate(const int n)
         int page_num = i / 3 + 5;
         int cache_size = (i % 4) * page_num / 4 + 2;
 
-        fprintf(tmp_file, "%d %d ", page_num, cache_size);
+        fprintf(tmp_file, "%d %d ", cache_size, page_num);
 
         for (int j = 0; j < page_num; j++) {
             fprintf(tmp_file, "%d ", rand() % page_num + 1);

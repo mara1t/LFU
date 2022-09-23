@@ -1,4 +1,4 @@
-Time elapsed for lfu: 0.146587
- lfu hits = 1
-Time elapsed for ideal: 0.297772
- ideal hits = 2
+Time elapsed for lfu: 0.003196
+ lfu hits = 0
+Time elapsed for ideal: 0.005651
+ ideal hits = 0
