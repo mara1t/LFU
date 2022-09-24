@@ -4,6 +4,8 @@
 
 	git clone https://github.com/mara1t/LFU.git
 	cd LFU
-	g++ main.cpp
-	./a.out
+	mkdir build 
+	cmake ../
+	cmake --build ./
+	./lfu
 
