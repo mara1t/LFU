@@ -96,6 +96,13 @@ public:
     void insert(KeyT key, T value)
     {   
         if (size_ == capacity_) {
+            
+            auto tmp_elem = all_elem_map_.find(key)->second;
+            if (tmp_elem.pos_list_.size() == 1) {
+                tmp_elem.pos_list_.pop_front();
+                return;
+            }
+
             KeyT least_used_elem_key = cache_map_.begin()->first;
         
             for (auto tmp_cache_elem : cache_map_) {
