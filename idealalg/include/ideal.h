@@ -117,10 +117,13 @@ public:
             cache_map_.erase(cache_map_.find(least_used_elem_key));
             cache_map_[key] = key;
 
+            all_elem_map_.find(key)->second.pos_list_.pop_front();
+
         }
         else {
             size_++;
             cache_map_[key] = key;
+            all_elem_map_.find(key)->second.pos_list_.pop_front();
         }
 
         
