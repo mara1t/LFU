@@ -1,4 +1,4 @@
-#include "..//include//ideal.h"
+#include "ideal.h"
 
 int main()
 {
@@ -23,8 +23,14 @@ int main()
 
     ideal_cache.fill_all_elem_map(vec);
 
+    std::cout << "HERE \n";
+
+    int i = 0;
     for (auto tmp_vector_elem : vec) {
         ideal_cache.access(tmp_vector_elem);
+        std::cout << "HERE i = " << i << "\n";
+        i++;
+
     }
     ideal_cache.print_hits();
 

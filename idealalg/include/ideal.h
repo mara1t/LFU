@@ -33,7 +33,6 @@ private:
 
     std::unordered_map<KeyT, elem_cache> all_elem_map_;
     std::unordered_map<KeyT, KeyT> cache_map_;
-    //std::vector<elem_cache> elem_vector_;
 
 public:
     cache_t(size_t capacity) : capacity_{capacity}, cache_map_{}, all_elem_map_{}, p_hits_{0}, size_{0} {}
@@ -63,19 +62,6 @@ public:
         }
 
     }
-    
-    /*void execute(int buf_size) 
-    {
-        std::vector<int> buf_vector(buf_size);
-        for (int i = 0; i < buf_size; i++) {
-            std::cin >> buf_vector[i];
-        }
-        fill_all_elem_map(buf_vector);
-
-        for (auto tmp_vector_elem : buf_vector) {
-            access(tmp_vector_elem);
-        }
-    }*/
 
     int access(KeyT key)
     {
@@ -96,7 +82,7 @@ public:
     void insert(KeyT key, T value)
     {   
         if (size_ == capacity_) {
-            
+
             auto tmp_elem = all_elem_map_.find(key)->second;
             if (tmp_elem.pos_list_.size() == 1) {
                 tmp_elem.pos_list_.pop_front();

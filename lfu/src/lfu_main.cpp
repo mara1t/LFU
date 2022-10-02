@@ -1,4 +1,4 @@
-#include "..//include//lfu.h"
+#include "lfu.h"
 #include <chrono>
 
 int main()

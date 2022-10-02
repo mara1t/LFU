@@ -46,7 +46,7 @@ public:
     std::unordered_map<KeyT, ListIt> umap_;
 
 
-    cache_t(size_t capacity) : capacity_{capacity}, size_{0}, freq_lst_{}, umap_{}, p_hits{0} {}
+    cache_t(size_t capacity) : p_hits{0}, capacity_{capacity}, size_{0}, freq_lst_{}, umap_{} {}
 
     void print_hits() const
     {
@@ -66,7 +66,7 @@ public:
 
     bool full(int size) const { return size == size_; }
 
-    FreqListIt get_new_node(T value, FreqListIt itr)
+    FreqListIt get_new_node(int value, FreqListIt itr)
     {
         freq_node_lfu_ freq_node{};
         freq_node.value_ = value;
@@ -75,11 +75,11 @@ public:
         return freq_node_it;
     }
 
-    KeyT access(KeyT key)
+    KeyT access(KeyT key, T (*get)(KeyT tmp_key))
     {
         auto tmp = umap_.find(key);
         if (tmp == umap_.end()) {
-            insert(key, 0);
+            insert(key, get(key));
             return key;
         }
     
@@ -104,13 +104,6 @@ public:
     }   
     void insert(KeyT key, T value)
     {
-        /*auto tmp = umap_.find(key);
-        if (tmp != umap_.end()) {
-
-            std::cout << "Key already exist" << std::endl;
-            return;
-        }*/
-
         size_++;
         if (size_ == capacity_ + 1) 
         {
@@ -134,14 +127,12 @@ public:
             freq_node_lfu_ tmp_freq_elem{};
             tmp_freq_elem.value_ = 1; 
             freq_lst_.push_front(tmp_freq_elem);
-            //freq_it = get_new_node(1, freq_lst_.begin());
         }
         freq_it = freq_lst_.begin();
 
         elem_lfu_ list_node{key, value, freq_it}; 
 
         freq_it->elem_lst_.push_front(list_node);
-        //umap_[key] = freq_it->elem_lst_.begin();
         umap_.emplace(std::make_pair(key, freq_it->elem_lst_.begin()));
     }
     

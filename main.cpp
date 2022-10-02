@@ -1,8 +1,12 @@
-#include "lfu//include//lfu.h"
-#include "idealalg//include//ideal.h"
+#include "lfu.h"
+#include "ideal.h"
 #include <chrono>
 #include <stdio.h>
 
+int get(int key)
+{
+    return key;
+};
 
 int main()
 {
@@ -25,7 +29,7 @@ int main()
     auto lfu_start = std::chrono::high_resolution_clock::now();
 
     for (const auto tmp_vec_elem : vec) 
-        lfu_cache.access(tmp_vec_elem);
+        lfu_cache.access(tmp_vec_elem, &get);
 
     auto lfu_finish = std::chrono::high_resolution_clock::now();
     auto lfu_elapsed = std::chrono::duration<double, std::milli>(lfu_finish - lfu_start);
@@ -50,4 +54,5 @@ int main()
 
     return 0;
 }
+
 
