@@ -1,5 +1,6 @@
 #pragma once
 
+#include <deque>
 #include <cassert>
 #include <assert.h>
 #include <iterator>
@@ -15,7 +16,7 @@ template <typename T, typename KeyT =int>
 struct elem_t {
     KeyT key_;
     T value_;
-    std::list<int> pos_list_;
+    std::deque<int> pos_list_;
 
     elem_t(KeyT key) : pos_list_{}, key_{key}, value_{0} {}
 };

@@ -39,10 +39,9 @@ int main()
 
     cache::cache_t<int, int> ideal_cache{cache_size};
 
-    auto ideal_start = std::chrono::high_resolution_clock::now();
-
     ideal_cache.fill_all_elem_map(vec);
 
+    auto ideal_start = std::chrono::high_resolution_clock::now();
     for (auto tmp_vector_elem : vec) {
         ideal_cache.access(tmp_vector_elem);
     }
