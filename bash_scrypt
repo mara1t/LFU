@@ -1,5 +1,7 @@
 #!/bin/bash
 for file in ./test_generate/tests/*
 do
+echo ${file}
 ./build/lfu < $file
+echo -e "\n"
 done

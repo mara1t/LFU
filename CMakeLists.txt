@@ -24,12 +24,12 @@ set (TEST_SOURCES test_generate/unit_tests.cpp)
 
 add_executable(unit_tests ${TEST_SOURCES})
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
-set(CMAKE_CXX_CLANG_TIDY 
-    "clang-tidy;
-    -header-filter=.;
-    -checks=*;
-    -warnings-as-errors=*")
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+#set(CMAKE_CXX_CLANG_TIDY 
+#    "clang-tidy;
+#    -header-filter=.;
+#    -checks=*;
+#    -warnings-as-errors=*")
 
 target_include_directories (unit_tests PRIVATE lfu/include idealalg/include)
 target_link_libraries(unit_tests ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} pthread)

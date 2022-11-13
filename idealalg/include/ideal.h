@@ -4,10 +4,11 @@
 #include <cassert>
 #include <assert.h>
 #include <iterator>
-#include <list>
+#include <cmath>
 #include <unordered_map>
 #include <iostream>
 #include <vector>
+#include <map>
 
 
 namespace cache {
@@ -26,25 +27,32 @@ class cache_t {
     size_t capacity_, size_;
 public:
     int p_hits_;
+    
+    int IS_WASTED = -1;
+
 private:
+    
+
     using elem_cache = elem_t<T, KeyT>;
     using IntVectorType = typename std::vector<int>;
     using ElemVectorTypeIt = typename std::vector<elem_cache>::iterator;
-
+    using multimap_it = typename std::multimap<int, KeyT>::iterator;
 
     std::unordered_map<KeyT, elem_cache> all_elem_map_;
-    std::unordered_map<KeyT, KeyT> cache_map_;
+    std::unordered_map<KeyT, multimap_it> cache_map_;
+    std::multimap<int, KeyT> sorted_map_;
 
 public:
-    cache_t(size_t capacity) : capacity_{capacity}, cache_map_{}, all_elem_map_{}, p_hits_{0}, size_{0} {}
+    cache_t(size_t capacity) : capacity_{capacity}, cache_map_{}, sorted_map_{}, all_elem_map_{}, p_hits_{0}, size_{0} {}
     
     void print_hits() const
     {
         std::cout << "ideal cache hits = " << p_hits_ << "\n";
     }
 
-    void fill_all_elem_map(IntVectorType buf_vector)
+    void fill_all_elem_map(const IntVectorType &buf_vector)
     {
+        IS_WASTED = buf_vector.size() + 3;
         KeyT tmp_key;
         int pos_counter = 0;
 
@@ -74,8 +82,18 @@ public:
 
         assert(!(all_elem_map_.find(key)->second.pos_list_.empty()));
 
-        all_elem_map_.find(key)->second.pos_list_.pop_front();
-        
+        auto deleteIt = sorted_map_.erase(tmp->second);
+        //cache_map_.erase(deleteIt);
+        auto tmp_all_map = all_elem_map_.find(key);
+        tmp_all_map->second.pos_list_.pop_front();
+
+        multimap_it iter;
+        if (tmp_all_map->second.pos_list_.begin() != tmp_all_map->second.pos_list_.end()) 
+            iter = sorted_map_.insert(std::make_pair(*(tmp_all_map->second.pos_list_.begin()), key));
+        else
+            iter = sorted_map_.insert(std::make_pair(IS_WASTED, key));
+
+        cache_map_.find(key)->second = iter;
         p_hits_++;
 
         return 0;
@@ -84,33 +102,39 @@ public:
     {   
         if (size_ == capacity_) {
 
-            auto tmp_elem = all_elem_map_.find(key)->second;
-            if (tmp_elem.pos_list_.size() == 1) {
-                tmp_elem.pos_list_.pop_front();
+            auto tmp_elem = all_elem_map_.find(key);
+            tmp_elem->second.pos_list_.pop_front();
+            if (tmp_elem->second.pos_list_.size() == 0) {
                 return;
             }
 
-            KeyT least_used_elem_key = cache_map_.begin()->first;
-        
-            for (auto tmp_cache_elem : cache_map_) {
-                if (all_elem_map_.find(tmp_cache_elem.first)->second.pos_list_.empty()) {
-                    least_used_elem_key = tmp_cache_elem.first;
-                    break;
-                }
-                else if (*(all_elem_map_.find(tmp_cache_elem.first)->second.pos_list_.begin()) > *(all_elem_map_.find(least_used_elem_key)->second.pos_list_.begin())) {
-                    least_used_elem_key = tmp_cache_elem.first;
-                }      
-            }
-            cache_map_.erase(cache_map_.find(least_used_elem_key));
-            cache_map_[key] = key;
+            auto maxIter = std::prev(sorted_map_.end());
 
-            all_elem_map_.find(key)->second.pos_list_.pop_front();
+            if (maxIter->first <= *(tmp_elem->second.pos_list_.begin())) {
+                return;
+            } 
+            auto cache_delete_key = maxIter->second;
+            auto deletedIter = cache_map_.find(cache_delete_key);
+            cache_map_.erase(deletedIter);
+            sorted_map_.erase(maxIter);
 
+            auto iter = sorted_map_.insert(std::make_pair(*(tmp_elem->second.pos_list_.begin()), key));
+            cache_map_.insert(std::make_pair(key, iter));
         }
         else {
             size_++;
-            cache_map_[key] = key;
-            all_elem_map_.find(key)->second.pos_list_.pop_front();
+            auto tmp_elem = all_elem_map_.find(key);
+            tmp_elem->second.pos_list_.pop_front();
+            multimap_it iter;
+
+            if (tmp_elem->second.pos_list_.begin() != tmp_elem->second.pos_list_.end()) 
+                iter = sorted_map_.insert(std::make_pair(*(tmp_elem->second.pos_list_.begin()), key));
+            else
+                iter = sorted_map_.insert(std::make_pair(IS_WASTED, key));
+
+            //uto iter = sorted_map_.insert(std::make_pair(*(tmp_elem.pos_list_.begin()), key));
+            cache_map_.insert(std::make_pair(key, iter));
+            //all_elem_map_.find(key)->second.pos_list_.pop_front();
         }
 
         
